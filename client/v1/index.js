@@ -30,6 +30,11 @@ console.log(MY_FAVORITE_DEALERS[0]);
 // 1. Create a new variable and assign it the link of the lego set with the highest reduction I can find on these 2 websites
 // 2. Log the variable
 
+var highest_reduction = "https://www.dealabs.com/bons-plans/selection-de-lego-en-promotion-ex-lego-technic-42174-yacht-emirates-team-new-zealand-ac75-ou-lego-ideas-21343-le-village-viking-a-9499-3231812";
+// The reduction from Dealabs is higher
+
+console.log("The highest reduction is :", highest_reduction);
+
 /**
  * 🧱
  * Easy 😁?
@@ -43,28 +48,103 @@ console.log(MY_FAVORITE_DEALERS[0]);
 // 1. Create a variable and assign it the number of deals
 // 2. Log the variable
 
+let nb_deals = deals.length;
+console.log("The number of deals in data.js is :", nb_deals);
+
 // 🎯 TODO 3: Website name
 // 1. Create a variable and assign it the list of shopping community name only
 // 2. Log the variable
 // 3. Log how many shopping communities we have
+const shoppingCommunityList = [];
+
+for (let i=0; i<nb_deals; i++) {
+  shoppingCommunityList[i] = deals[i]["community"];
+}
+
+console.log("The list of shopping community name :", shoppingCommunityList)
+
+const shoppingCommunities = new Set(shoppingCommunityList);
+console.log("Number of shopping communties :", shoppingCommunities.size, "\nwhich are ", shoppingCommunities)
 
 // 🎯 TODO 4: Sort by price
 // 1. Create a function to sort the deals by price
 // 2. Create a variable and assign it the list of sets by price from lowest to highest
 // 3. Log the variable
 
+// Fonction de tri sans sort
+
+function sort(tab) {
+  var sorted_tab = [tab[0]]
+  for (let i=1; i < tab.length; i++) {
+    for (let j=0; j < sorted_tab.length; j++) {
+  
+    if (sorted_tab[j] > tab[i]) {
+        console.log("true", i, j)
+        sorted_tab = [].concat(sorted_tab.slice(0,j), [tab[i]], sorted_tab.slice(j))
+        break
+
+      } 
+    }
+
+    if (!(sorted_tab.includes(tab[i]))) {
+        sorted_tab.push(tab[i])
+        break
+    } 
+  }
+  return tab
+
+}
+
+// const arr = [45,1,2,5,7,1,6,85,11,2]
+// console.log(sort(arr))
+
+// Sort
+
+function SortBy(items, sortby) {
+  items.sort((a, b) => a[sortby] - b[sortby])
+  return items
+}
+
+console.log("Sorted by price : ", SortBy(deals, "price"))
+
 // 🎯 TODO 5: Sort by date
 // 1. Create a function to sort the deals by date
 // 2. Create a variable and assign it the list of deals by date from recent to old
 // 3. Log the variable
 
+console.log("Sorted by date : ", SortBy(deals, "publisher"))
+
 // 🎯 TODO 6: Filter a specific percentage discount range
 // 1. Filter the list of deals between 50% and 75%
 // 2. Log the list
 
+var filteredDeals = []
+for (var item of deals) {
+  if (item.discount > 50 && item.discount < 75) {
+    filteredDeals.push(item)
+  }
+}
+
+console.log("Filtered deals : ", filteredDeals)
+
+// Or, with a dedicated function
+// const filteredDeals_bis = filterByRange(deals,[50,75])
+
+
 // 🎯 TODO 7: Average percentage discount
 // 1. Determine the average percentage discount of the deals
 // 2. Log the average
+
+var averageDiscount = 0
+for (var item of deals) {
+    averageDiscount = averageDiscount + item.discount
+}
+averageDiscount = averageDiscount/nb_deals
+
+console.log("Average discount : ", averageDiscount)
+
+// We can also do a function to compute the average with this structure
+
 
 /**
  * 🏎
@@ -88,6 +168,21 @@ console.log(MY_FAVORITE_DEALERS[0]);
 //
 // 2. Log the variable
 // 3. Log the number of deals by community
+
+
+console.log(communities)
+
+for (let i=0; i < shoppingCommunities.size; i++) {
+  communities[i].push("community-name-$i" + i)
+  for (var item of deals) {
+    if (item.community == shoppingCommunities[i]) {
+      communities[i].push(item) 
+    }
+  }
+}
+
+console.log("Deals by community : ", communities)
+
 
 // 🎯 TODO 9: Sort by price for each community
 // 1. For each community, sort the deals by discount price, from highest to lowest
