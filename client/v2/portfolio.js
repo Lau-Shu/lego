@@ -31,6 +31,10 @@ const selectPage = document.querySelector('#page-select');
 const selectLegoSetIds = document.querySelector('#lego-set-id-select');
 const sectionDeals= document.querySelector('#deals');
 const spanNbDeals = document.querySelector('#nbDeals');
+const selectFilterDiscount = document.querySelector('#filter-discount');
+const selectFilterCommented = document.querySelector('#filter-commented');
+const selectFilterHotDeals = document.querySelector('#filter-hot-deals');
+const selectSort = document.querySelector('#sort-select');
 
 /**
  * Set global value
@@ -150,6 +154,97 @@ selectShow.addEventListener('change', async (event) => {
   setCurrentDeals(deals);
   render(currentDeals, currentPagination);
 });
+
+selectPage.addEventListener('change', async (event) => {
+  const deals = await fetchDeals(parseInt(event.target.value), currentPagination.pageSize); 
+
+  setCurrentDeals(deals);
+  render(currentDeals, currentPagination);
+});
+
+selectFilterDiscount.addEventListener('change', async () => {
+  const deals = await fetchDeals(currentPagination.currentPage, currentPagination.pageSize);
+  const deals_filtered = [];
+
+  if (selectFilterDiscount.checked === true) {
+    for (let deal of deals.result) {
+      if (deal.discount > 20) {
+        deals_filtered.push(deal);
+      }
+    }
+  }
+  if (deals_filtered.length > 0) {
+    setCurrentDeals({result: deals_filtered, meta: deals.meta});
+    // meta = infos sur la pagination donc je peux réutiliser les mêmes infos que pour les deals non filtrés
+  } else {
+    console.log("No deal found with the selected discount filters");
+    setCurrentDeals(deals);
+  }
+
+  render(currentDeals, currentPagination);
+});
+
+selectFilterCommented.addEventListener('change', async () => {
+  const deals = await fetchDeals(currentPagination.currentPage, currentPagination.pageSize);
+  const deals_filtered = [];
+
+  if (selectFilterCommented.checked === true) {
+    for (let deal of deals.result) {
+      if (deal.comments > 5) {
+        deals_filtered.push(deal);
+      }
+    }
+  }
+  if (deals_filtered.length > 0) {
+    setCurrentDeals({result: deals_filtered, meta: deals.meta});
+    // meta = infos sur la pagination donc je peux réutiliser les mêmes infos que pour les deals non filtrés
+  } else {
+    console.log("No deal found with the selected comment filters");
+    setCurrentDeals(deals);
+  }
+
+  render(currentDeals, currentPagination);
+});
+
+selectFilterHotDeals.addEventListener('change', async () => {
+  const deals = await fetchDeals(currentPagination.currentPage, currentPagination.pageSize);
+  const deals_filtered = [];
+
+  if (selectFilterHotDeals.checked === true) {
+    for (let deal of deals.result) {
+      if (deal.temperature > 100) {
+        deals_filtered.push(deal);
+      }
+    }
+  }
+  if (deals_filtered.length > 0) {
+    setCurrentDeals({result: deals_filtered, meta: deals.meta});
+    // meta = infos sur la pagination donc je peux réutiliser les mêmes infos que pour les deals non filtrés
+  } else {
+    console.log("No deal found with the selected hot deals filters");
+    setCurrentDeals(deals);
+  }
+
+  render(currentDeals, currentPagination);
+});
+
+selectSort.addEventListener('change', async (event) => {
+  const deals = await fetchDeals(currentPagination.currentPage, currentPagination.pageSize);
+
+  if (event.target.value === "price-asc") {
+    deals.result.sort((a, b) => a.price - b.price);
+  } else if (event.target.value === "price-desc") {
+    deals.result.sort((a, b) => b.price - a.price);
+  } else if (event.target.value === "date-asc") {
+    deals.result.sort((a, b) => a.date - b.date);
+  } else if (event.target.value === "date-desc") {
+    deals.result.sort((a, b) => b.date - a.date);
+  }
+
+  setCurrentDeals(deals);
+  render(currentDeals, currentPagination);
+});
+
 
 document.addEventListener('DOMContentLoaded', async () => {
   const deals = await fetchDeals();
