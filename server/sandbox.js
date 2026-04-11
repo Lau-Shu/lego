@@ -11,10 +11,10 @@ async function scrapeADLB (website = 'https://www.avenuedelabrique.com/promotion
 
     console.log(deals);
     console.log('done');
-    process.exit(0);
+    // process.exit(0);
   } catch (e) {
     console.error(e);
-    process.exit(1);
+    // process.exit(1);
   }
 }
 
@@ -26,10 +26,10 @@ async function scrapeVinted (lego) {
 
     console.log(sales);
     console.log('done');
-    process.exit(0);
+    // process.exit(0);
   } catch (e) {
     console.error(e);
-    process.exit(1);
+    // process.exit(1);
   }
 }
 
@@ -40,7 +40,7 @@ async function scrapeDealabs (website = 'https://www.dealabs.com/groupe/lego') {
     console.log(dealabsDeals);
   } catch (e) {
     console.error(e);
-    process.exit(1);
+    // process.exit(1);
   }
 }
 
