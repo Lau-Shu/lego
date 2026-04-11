@@ -1,6 +1,7 @@
 // Invoking strict mode https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode#invoking_strict_mode
 'use strict';
 
+
 /**
 Description of the available api
 GET https://lego-api-blue.vercel.app/deals
@@ -35,6 +36,8 @@ const selectFilterDiscount = document.querySelector('#filter-discount');
 const selectFilterCommented = document.querySelector('#filter-commented');
 const selectFilterHotDeals = document.querySelector('#filter-hot-deals');
 const selectSort = document.querySelector('#sort-select');
+const selectLegoSetId = document.querySelector('#lego-set-id-select');
+const selectShowFavorite = document.querySelector('#show-favorite');
 
 /**
  * Set global value
@@ -45,6 +48,7 @@ const setCurrentDeals = ({result, meta}) => {
   currentDeals = result;
   currentPagination = meta;
 };
+
 
 /**
  * Fetch deals from api
@@ -71,11 +75,31 @@ const fetchDeals = async (page = 1, size = 6) => {
   }
 };
 
+const fetchAllDeals = async (page = 1, size = 100000000) => {
+  try {
+    const response = await fetch(
+      `https://lego-api-blue.vercel.app/deals?page=${page}&size=${size}`
+    );
+    const body = await response.json();
+
+    if (body.success !== true) {
+      console.error(body);
+      return {currentDeals, currentPagination};
+    }
+
+    return body.data;
+  } catch (error) {
+    console.error(error);
+    return {currentDeals, currentPagination};
+  }
+};
+
 /**
  * Render list of deals
  * @param  {Array} deals
  */
 const renderDeals = deals => {
+  
   const fragment = document.createDocumentFragment();
   const div = document.createElement('div');
   const template = deals
@@ -83,9 +107,21 @@ const renderDeals = deals => {
       return `
       <div class="deal" id=${deal.uuid}>
         <span>${deal.id}</span>
-        <a href="${deal.link}">${deal.title}</a>
+        <a href="${deal.link}" target="_blank">${deal.title}</a>
         <span>${deal.price}</span>
+        <span
       </div>
+
+      <label>
+        <input 
+          type="checkbox"
+          class="favorite-checkbox"
+          data-id="${deal.uuid}"
+          ${isFavorite(deal.uuid) ? 'checked' : ''}
+        >
+        Favori
+      </label>
+
     `;
     })
     .join('');
@@ -94,6 +130,14 @@ const renderDeals = deals => {
   fragment.appendChild(div);
   sectionDeals.innerHTML = '<h2>Deals</h2>';
   sectionDeals.appendChild(fragment);
+
+  // Ajouter les favoris après le rendu des deals
+  document.querySelectorAll('.favorite-checkbox').forEach(cb => {
+    cb.addEventListener('change', e => {
+      toggleFavorite(e.target.dataset.id);
+    });
+  }); 
+
 };
 
 /**
@@ -117,9 +161,10 @@ const renderPagination = pagination => {
  */
 const renderLegoSetIds = deals => {
   const ids = getIdsFromDeals(deals);
-  const options = ids.map(id => 
+  const options = `<option value="All">All</option>` + ids.map(id => 
     `<option value="${id}">${id}</option>`
   ).join('');
+
 
   selectLegoSetIds.innerHTML = options;
 };
@@ -134,11 +179,11 @@ const renderIndicators = pagination => {
   spanNbDeals.innerHTML = count;
 };
 
-const render = (deals, pagination) => {
+const render = (deals, pagination) => {  
   renderDeals(deals);
   renderPagination(pagination);
   renderIndicators(pagination);
-  renderLegoSetIds(deals)
+  renderLegoSetIds(deals);
 };
 
 /**
@@ -151,17 +196,18 @@ const render = (deals, pagination) => {
 selectShow.addEventListener('change', async (event) => {
   const deals = await fetchDeals(currentPagination.currentPage, parseInt(event.target.value));
 
-  setCurrentDeals(deals);
+  setCurrentDeals({result: deals.result, meta: deals.meta});
   render(currentDeals, currentPagination);
 });
 
 selectPage.addEventListener('change', async (event) => {
   const deals = await fetchDeals(parseInt(event.target.value), currentPagination.pageSize); 
 
-  setCurrentDeals(deals);
+  setCurrentDeals({result: deals.result, meta: deals.meta});
   render(currentDeals, currentPagination);
 });
 
+// Filter by discount
 selectFilterDiscount.addEventListener('change', async () => {
   const deals = await fetchDeals(currentPagination.currentPage, currentPagination.pageSize);
   const deals_filtered = [];
@@ -178,12 +224,13 @@ selectFilterDiscount.addEventListener('change', async () => {
     // meta = infos sur la pagination donc je peux réutiliser les mêmes infos que pour les deals non filtrés
   } else {
     console.log("No deal found with the selected discount filters");
-    setCurrentDeals(deals);
+    setCurrentDeals({result: deals.result, meta: deals.meta});
   }
 
   render(currentDeals, currentPagination);
 });
 
+// Filter by number of comments
 selectFilterCommented.addEventListener('change', async () => {
   const deals = await fetchDeals(currentPagination.currentPage, currentPagination.pageSize);
   const deals_filtered = [];
@@ -200,12 +247,13 @@ selectFilterCommented.addEventListener('change', async () => {
     // meta = infos sur la pagination donc je peux réutiliser les mêmes infos que pour les deals non filtrés
   } else {
     console.log("No deal found with the selected comment filters");
-    setCurrentDeals(deals);
+    setCurrentDeals({result: deals.result, meta: deals.meta});
   }
 
   render(currentDeals, currentPagination);
 });
 
+// Filter by hot deals
 selectFilterHotDeals.addEventListener('change', async () => {
   const deals = await fetchDeals(currentPagination.currentPage, currentPagination.pageSize);
   const deals_filtered = [];
@@ -222,12 +270,13 @@ selectFilterHotDeals.addEventListener('change', async () => {
     // meta = infos sur la pagination donc je peux réutiliser les mêmes infos que pour les deals non filtrés
   } else {
     console.log("No deal found with the selected hot deals filters");
-    setCurrentDeals(deals);
+    setCurrentDeals({result: deals.result, meta: deals.meta});
   }
 
   render(currentDeals, currentPagination);
 });
 
+// Sort by price or date
 selectSort.addEventListener('change', async (event) => {
   const deals = await fetchDeals(currentPagination.currentPage, currentPagination.pageSize);
 
@@ -236,19 +285,87 @@ selectSort.addEventListener('change', async (event) => {
   } else if (event.target.value === "price-desc") {
     deals.result.sort((a, b) => b.price - a.price);
   } else if (event.target.value === "date-asc") {
-    deals.result.sort((a, b) => a.date - b.date);
+    deals.result.sort((a, b) => a.published - b.published);
   } else if (event.target.value === "date-desc") {
-    deals.result.sort((a, b) => b.date - a.date);
+    deals.result.sort((a, b) => b.published - a.published);
   }
 
-  setCurrentDeals(deals);
+  setCurrentDeals({ result: deals.result, meta: deals.meta });
   render(currentDeals, currentPagination);
 });
 
+selectLegoSetId.addEventListener('change', (event) => {
+  const deals = currentDeals;
+
+  // Cas "All"
+  if (event.target.value === "All") {
+    setCurrentDeals({result: deals.result, meta: deals.meta});
+    render(currentDeals, currentPagination);
+    renderLegoSetIds(currentDeals);
+    return;
+  }
+
+  // Filtrage
+  const deals_filtered = deals.filter(deal => 
+    deal.id === parseInt(event.target.value)
+  );
+
+  // Mise à jour du state
+  setCurrentDeals(deals_filtered, currentPagination);
+
+  // Render
+  render(currentDeals, currentPagination);
+  renderLegoSetIds(currentDeals);
+
+  // Indicateur
+  document.getElementById("nbDeals").innerHTML = currentDeals.result.length;
+});
+
+// Show only favorites
+selectShowFavorite.addEventListener('change', async () => {
+  const deals = await fetchDeals(
+    currentPagination.currentPage,
+    currentPagination.pageSize
+  );
+
+  let deals_filtered = deals.result;
+
+  if (selectShowFavorite.checked) {
+    const favorites = getFavorites();
+
+    deals_filtered = deals.result.filter(deal =>
+      favorites.includes(deal.uuid)
+    );
+  }
+
+  setCurrentDeals({ result: deals_filtered, meta: deals.meta });
+  render(currentDeals, currentPagination);
+});
 
 document.addEventListener('DOMContentLoaded', async () => {
   const deals = await fetchDeals();
 
-  setCurrentDeals(deals);
+  setCurrentDeals({result: deals.result, meta: deals.meta});
   render(currentDeals, currentPagination);
 });
+
+// Favorites
+function getFavorites() {
+  return JSON.parse(localStorage.getItem("favorites")) || [];
+}
+
+function toggleFavorite(id) {
+  let favs = getFavorites();
+
+  if (favs.includes(id)) {
+    favs = favs.filter(f => f !== id);
+  } else {
+    favs.push(id);
+  }
+
+  localStorage.setItem("favorites", JSON.stringify(favs));
+}
+
+function isFavorite(id) {
+  return getFavorites().includes(id);
+}

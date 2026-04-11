@@ -1,4 +1,7 @@
-import * as cheerio from 'cheerio';
+import * as cheerio from 'cheerio'; 
+//html côté serveur, en client on a querySelector, ici on utilise cheerio pour faire du parsing de html côté serveur
+// le client charge des données alors que le serveur prend juste l'url, récupère le html en full string et la librairie va les retourner plus vite une fois scrappé
+// Rq : querySelector ne montre que le premier élément correspondant
 import { v5 as uuidv5 } from 'uuid';
 /**
  * Parse webpage data response
@@ -8,24 +11,29 @@ import { v5 as uuidv5 } from 'uuid';
 const parse = data => {
   const $ = cheerio.load(data, {'xmlMode': true});
 
-  return $('div.prods a')
+  return $('div.prods a') // c'est des sélecteurs CSS, utilisé retrouver les éléments à mettre
     .map((i, element) => {
       const link = $(element)
-        .attr('href');
+        .attr('href'); // c'est des sélecteurs CSS
 
       const price = parseFloat(
         $(element)
-          .find('span.prodl-prix span')
+          .find('span.prodl-prix span') // c'est des sélecteurs CSS
           .text()
       );
 
       const discount = Math.abs(parseInt(
         $(element)
-          .find('span.prodl-reduc')
+          .find('span.prodl-reduc') // c'est des sélecteurs CSS
           .text()
       ));
 
+      const id = $(element)
+        .find('span.prodl-ref')
+        .text();
+
       return {
+        id,
         discount,
         link,
         price,
