@@ -104,6 +104,7 @@ const fetchAllDeals = async (page = 1, size = 100000000) => {
  * @param  {Array} deals
  */
 const renderDeals = deals => {
+  
   const fragment = document.createDocumentFragment();
   const div = document.createElement('div');
   const template = deals
