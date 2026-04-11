@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SearchLegoDeal - Sales</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-shell sales-page">
+    <header class="topbar">
+      <a class="brand-link" href="examples-landing-page.html"><div class="brand-mark">B</div></a>
+      <nav class="page-nav">
+        <a href="examples-landing-page.html">Accueil</a>
+        <a href="examples-shop.html">Deals</a>
+        <a href="examples-sales.html">Sales</a>
+      </nav>
+    </header>
+
+    <section class="page-header">
+      <div>
+        <p class="eyebrow">Sales</p>
+        <h1>Sales</h1>
+        <p class="page-description">Body text for whatever you’d like to say. Add main takeaway points, quotes, anecdotes, or even a very very short story.</p>
+      </div>
+    </section>
+
+    <div class="sales-top-row">
+      <label class="sales-search-label">Search set id
+        <input id="sales-id-input" type="text" placeholder="Type a Lego set id and press Enter" />
+      </label>
+    </div>
+
+    <div class="sales-stats-row">
+      <article class="metric-card-sm">
+        <p class="metric-label">Number of sales</p>
+        <p id="nbSales" class="metric-value">0</p>
+      </article>
+      <article class="metric-card-sm">
+        <p class="metric-label">Lifetime</p>
+        <p id="lifetimeValue" class="metric-value">0 days</p>
+      </article>
+    </div>
+
+    <div class="price-grid">
+      <article class="price-card">p5 price value <strong id="p5value">0</strong></article>
+      <article class="price-card">p25 price value <strong id="p25value">0</strong></article>
+      <article class="price-card">p50 price value <strong id="p50value">0</strong></article>
+    </div>
+
+    <section id="sales">
+    </section>
+
+    <footer class="footer-note">
+      <p>Prototype sales page créé pour le projet Lego.</p>
+    </footer>
+  </div>
+  <script src="utils.js"></script>
+  <script src="portfolioSales.js"></script>
+</body>
+</html>

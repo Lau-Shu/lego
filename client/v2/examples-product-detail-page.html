@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SearchLegoDeal - Détail</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand-link" href="examples-landing-page.html"><div class="brand-mark">B</div></a>
+      <nav class="page-nav">
+        <a href="examples-landing-page.html">Accueil</a>
+        <a href="examples-shop.html">Deals</a>
+        <a href="examples-sales.html">Sales</a>
+      </nav>
+    </header>
+
+    <section class="product-detail-grid">
+      <div class="product-image-panel">
+        <button class="icon-button heart" aria-label="Favori">♥</button>
+        <div class="product-image"></div>
+      </div>
+      <div class="detail-panel">
+        <div class="detail-heading">
+          <p class="eyebrow">Text Heading</p>
+          <div class="tag-chip">Tag</div>
+        </div>
+        <div class="detail-price">
+          <span class="price-sign">€</span>
+          <span class="price-value">50</span>
+        </div>
+        <p class="detail-meta">Id : (id of the lego set)<br/>Original Price : (price) / No promotion (if same price)<br/>Vendor : (website) by (user)<br/>Date : (publication date)</p>
+        <a href="#" class="button primary">Go to seller website</a>
+      </div>
+    </section>
+
+    <section class="about-panel">
+      <div class="about-heading">
+        <p class="section-title">About the set’s information on Vinted...</p>
+        <p class="section-subtitle">Subheading</p>
+      </div>
+      <div class="metric-grid">
+        <article class="metric-card">
+          <p class="metric-label">Number of sales</p>
+          <p id="detail-nbSales" class="metric-value">0</p>
+        </article>
+        <article class="metric-card">
+          <p class="metric-label">Lifetime value</p>
+          <p id="detail-lifetimeValue" class="metric-value">0 days</p>
+        </article>
+        <article class="metric-card">
+          <p class="metric-label">p5 price value</p>
+          <p id="detail-p5value" class="metric-value">0</p>
+        </article>
+        <article class="metric-card">
+          <p class="metric-label">p25 price value</p>
+          <p id="detail-p25value" class="metric-value">0</p>
+        </article>
+        <article class="metric-card">
+          <p class="metric-label">p50 price value</p>
+          <p id="detail-p50value" class="metric-value">0</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="review-section">
+      <p class="section-title">Latest reviews from Dealabs</p>
+      <div class="review-grid">
+        <article class="review-card">
+          <div class="rating-row">★★★★★</div>
+          <h3>Review title</h3>
+          <p>Review body</p>
+          <div class="review-author">
+            <span>Reviewer name</span>
+            <span>Date</span>
+          </div>
+        </article>
+        <article class="review-card">
+          <div class="rating-row">★★★★★</div>
+          <h3>Review title</h3>
+          <p>Review body</p>
+          <div class="review-author">
+            <span>Reviewer name</span>
+            <span>Date</span>
+          </div>
+        </article>
+        <article class="review-card">
+          <div class="rating-row">★★★★★</div>
+          <h3>Review title</h3>
+          <p>Review body</p>
+          <div class="review-author">
+            <span>Reviewer name</span>
+            <span>Date</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <footer class="footer-note">
+      <p>Prototype product detail page créé pour le projet Lego.</p>
+    </footer>
+  </div>
+  <script src="portfolio.js"></script>
+  <script>
+    // Script pour charger les détails du deal
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const dealId = urlParams.get('id');
+      
+      if (!dealId) {
+        console.error('No deal ID provided');
+        return;
+      }
+
+      // Essayer de récupérer depuis sessionStorage d'abord
+      let deal = null;
+      const storedDeals = sessionStorage.getItem('currentDeals');
+      if (storedDeals) {
+        const deals = JSON.parse(storedDeals);
+        deal = deals.find(d => d.uuid === dealId);
+      }
+
+      // Si pas trouvé en sessionStorage, récupérer depuis l'API
+      if (!deal) {
+        try {
+          const response = await fetch(`https://lego-api-blue.vercel.app/deals?page=1&size=100`);
+          const data = await response.json();
+          if (data.success && data.data.result) {
+            deal = data.data.result.find(d => d.uuid === dealId);
+          }
+        } catch (error) {
+          console.error('Error fetching deal:', error);
+        }
+      }
+
+      if (deal) {
+        // Remplir la page avec les données du deal
+        document.querySelector('.product-image').style.backgroundImage = `url(https://via.placeholder.com/400x300/FFD700/000000?text=Lego+Set+${deal.id})`;
+        document.querySelector('.eyebrow').textContent = `Deal ${deal.id}`;
+        document.querySelector('.detail-price .price-value').textContent = deal.price;
+        document.querySelector('.detail-meta').innerHTML = `
+          Id : ${deal.id}<br/>
+          Original Price : ${deal.price}€<br/>
+          Vendor : Lego Deal<br/>
+          Date : ${deal.published ? new Date(deal.published).toLocaleDateString() : 'N/A'}
+        `;
+        document.querySelector('.button.primary').href = deal.link;
+        document.querySelector('.button.primary').target = '_blank';
+        
+        // Gérer le bouton favori
+        const heartButton = document.querySelector('.heart');
+        const isFav = isFavorite(deal.uuid);
+        heartButton.classList.toggle('active', isFav);
+        heartButton.addEventListener('click', () => {
+          toggleFavorite(deal.uuid);
+          heartButton.classList.toggle('active', isFavorite(deal.uuid));
+        });
+
+        // Load Vinted metrics for this set ID
+        await loadVintedMetrics(deal.id);
+      } else {
+        console.error('Deal not found');
+      }
+    });
+
+    // Function to load Vinted sales metrics
+    async function loadVintedMetrics(setId) {
+      try {
+        const response = await fetch(`https://lego-api-blue.vercel.app/sales?id=${setId}`);
+        const data = await response.json();
+
+        if (!data.success || !data.data.result || data.data.result.length === 0) {
+          console.log('No sales found for this set');
+          return;
+        }
+
+        const sales = data.data.result;
+        const prices = sales.map(s => parseInt(s.price.amount, 10)).sort((a, b) => a - b);
+        const timestamps = sales.map(s => s.published);
+
+        // Update metrics
+        document.querySelector('#detail-nbSales').textContent = sales.length;
+
+        const p5Value = prices[Math.floor(prices.length * 0.05)] || 0;
+        const p25Value = prices[Math.floor(prices.length * 0.25)] || 0;
+        const p50Value = prices[Math.floor(prices.length * 0.5)] || 0;
+        document.querySelector('#detail-p5value').textContent = p5Value;
+        document.querySelector('#detail-p25value').textContent = p25Value;
+        document.querySelector('#detail-p50value').textContent = p50Value;
+
+        const oldest_sale_timestamp = Math.min(...timestamps);
+        const lifetimeValue = Math.floor((Date.now() - oldest_sale_timestamp) / (1000 * 60 * 60 * 24));
+        document.querySelector('#detail-lifetimeValue').textContent = `${lifetimeValue} days`;
+      } catch (error) {
+        console.error('Error loading Vinted metrics:', error);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -25,6 +25,7 @@ This endpoint accepts the following optional query string parameters:
 // current deals on the page
 let currentDeals = [];
 let currentPagination = {};
+let currentSort = 'date-desc'; // Track current sort state
 
 // instantiate the selectors
 const selectShow = document.querySelector('#show-select');
@@ -35,9 +36,13 @@ const spanNbDeals = document.querySelector('#nbDeals');
 const selectFilterDiscount = document.querySelector('#filter-discount');
 const selectFilterCommented = document.querySelector('#filter-commented');
 const selectFilterHotDeals = document.querySelector('#filter-hot-deals');
-const selectSort = document.querySelector('#sort-select');
 const selectLegoSetId = document.querySelector('#lego-set-id-select');
 const selectShowFavorite = document.querySelector('#show-favorite');
+const dealSearchInput = document.querySelector('#deal-search');
+const btnSortPriceAsc = document.querySelector('#sort-price-asc-btn');
+const btnSortPriceDesc = document.querySelector('#sort-price-desc-btn');
+const btnSortDateAsc = document.querySelector('#sort-date-asc-btn');
+const btnSortDateDesc = document.querySelector('#sort-date-desc-btn');
 
 /**
  * Set global value
@@ -99,29 +104,30 @@ const fetchAllDeals = async (page = 1, size = 100000000) => {
  * @param  {Array} deals
  */
 const renderDeals = deals => {
-  
   const fragment = document.createDocumentFragment();
   const div = document.createElement('div');
   const template = deals
     .map(deal => {
       return `
-      <div class="deal" id=${deal.uuid}>
-        <span>${deal.id}</span>
-        <a href="${deal.link}" target="_blank">${deal.title}</a>
-        <span>${deal.price}</span>
-        <span
-      </div>
-
-      <label>
-        <input 
-          type="checkbox"
-          class="favorite-checkbox"
-          data-id="${deal.uuid}"
-          ${isFavorite(deal.uuid) ? 'checked' : ''}
-        >
-        Favori
-      </label>
-
+      <a href="examples-product-detail-page.html?id=${deal.uuid}" class="deal-card" id="${deal.uuid}">
+        <img src="https://via.placeholder.com/300x190/FFD700/000000?text=Lego+Set+${deal.id}" alt="Lego Set ${deal.id}" class="deal-image">
+        <div class="deal-body">
+          <div>
+            <h3 class="deal-title">${deal.title}</h3>
+            <span class="deal-id">Set ID: ${deal.id}</span>
+          </div>
+          <span class="deal-price">${deal.price}€</span>
+        </div>
+        <label class="favorite-label">
+          <input
+            type="checkbox"
+            class="favorite-checkbox"
+            data-id="${deal.uuid}"
+            ${isFavorite(deal.uuid) ? 'checked' : ''}
+          />
+          Favori
+        </label>
+      </a>
     `;
     })
     .join('');
@@ -131,13 +137,14 @@ const renderDeals = deals => {
   sectionDeals.innerHTML = '<h2>Deals</h2>';
   sectionDeals.appendChild(fragment);
 
-  // Ajouter les favoris après le rendu des deals
+  // Stocker les deals actuels pour la page de détail
+  sessionStorage.setItem('currentDeals', JSON.stringify(deals));
+
   document.querySelectorAll('.favorite-checkbox').forEach(cb => {
     cb.addEventListener('change', e => {
       toggleFavorite(e.target.dataset.id);
     });
-  }); 
-
+  });
 };
 
 /**
@@ -201,7 +208,7 @@ selectShow.addEventListener('change', async (event) => {
 });
 
 selectPage.addEventListener('change', async (event) => {
-  const deals = await fetchDeals(parseInt(event.target.value), currentPagination.pageSize); 
+  const deals = await fetchDeals(parseInt(event.target.value), currentPagination.pageSize);
 
   setCurrentDeals({result: deals.result, meta: deals.meta});
   render(currentDeals, currentPagination);
@@ -228,6 +235,7 @@ selectFilterDiscount.addEventListener('change', async () => {
   }
 
   render(currentDeals, currentPagination);
+  updateSortButtonStates(currentSort);
 });
 
 // Filter by number of comments
@@ -251,6 +259,7 @@ selectFilterCommented.addEventListener('change', async () => {
   }
 
   render(currentDeals, currentPagination);
+  updateSortButtonStates(currentSort);
 });
 
 // Filter by hot deals
@@ -274,51 +283,95 @@ selectFilterHotDeals.addEventListener('change', async () => {
   }
 
   render(currentDeals, currentPagination);
+  updateSortButtonStates(currentSort);
 });
 
-// Sort by price or date
-selectSort.addEventListener('change', async (event) => {
-  const deals = await fetchDeals(currentPagination.currentPage, currentPagination.pageSize);
+// Search by title
+if (dealSearchInput) {
+  dealSearchInput.addEventListener('input', (event) => {
+    const searchTerm = event.target.value.toLowerCase().trim();
+    
+    if (!searchTerm) {
+      // If search is empty, reload all deals
+      renderDeals(currentDeals);
+      return;
+    }
+    
+    // Filter deals by title
+    const filteredDeals = currentDeals.filter(deal => 
+      deal.title.toLowerCase().includes(searchTerm)
+    );
+    
+    renderDeals(filteredDeals);
+  });
+}
 
-  if (event.target.value === "price-asc") {
-    deals.result.sort((a, b) => a.price - b.price);
-  } else if (event.target.value === "price-desc") {
-    deals.result.sort((a, b) => b.price - a.price);
-  } else if (event.target.value === "date-asc") {
-    deals.result.sort((a, b) => a.published - b.published);
-  } else if (event.target.value === "date-desc") {
-    deals.result.sort((a, b) => b.published - a.published);
-  }
+// Sort by price ascending
+if (btnSortPriceAsc) {
+  btnSortPriceAsc.addEventListener('click', () => {
+    const sortedDeals = [...currentDeals].sort((a, b) => a.price - b.price);
+    setCurrentDeals({ result: sortedDeals, meta: currentPagination });
+    render(currentDeals, currentPagination);
+    updateSortButtonStates('price-asc');
+  });
+}
 
-  setCurrentDeals({ result: deals.result, meta: deals.meta });
-  render(currentDeals, currentPagination);
-});
+// Sort by price descending
+if (btnSortPriceDesc) {
+  btnSortPriceDesc.addEventListener('click', () => {
+    const sortedDeals = [...currentDeals].sort((a, b) => b.price - a.price);
+    setCurrentDeals({ result: sortedDeals, meta: currentPagination });
+    render(currentDeals, currentPagination);
+    updateSortButtonStates('price-desc');
+  });
+}
+
+// Sort by date ascending (oldest)
+if (btnSortDateAsc) {
+  btnSortDateAsc.addEventListener('click', () => {
+    const sortedDeals = [...currentDeals].sort((a, b) => {
+      const aDate = a.published ? new Date(a.published).getTime() : 0;
+      const bDate = b.published ? new Date(b.published).getTime() : 0;
+      return aDate - bDate;
+    });
+    setCurrentDeals({ result: sortedDeals, meta: currentPagination });
+    render(currentDeals, currentPagination);
+    updateSortButtonStates('date-asc');
+  });
+}
+
+// Sort by date descending (newest)
+if (btnSortDateDesc) {
+  btnSortDateDesc.addEventListener('click', () => {
+    const sortedDeals = [...currentDeals].sort((a, b) => {
+      const aDate = a.published ? new Date(a.published).getTime() : 0;
+      const bDate = b.published ? new Date(b.published).getTime() : 0;
+      return bDate - aDate;
+    });
+    setCurrentDeals({ result: sortedDeals, meta: currentPagination });
+    render(currentDeals, currentPagination);
+    updateSortButtonStates('date-desc');
+  });
+}
 
 selectLegoSetId.addEventListener('change', (event) => {
-  const deals = currentDeals;
-
-  // Cas "All"
   if (event.target.value === "All") {
-    setCurrentDeals({result: deals.result, meta: deals.meta});
     render(currentDeals, currentPagination);
     renderLegoSetIds(currentDeals);
+    document.getElementById("nbDeals").innerHTML = currentDeals.length;
+    updateSortButtonStates(currentSort);
     return;
   }
 
-  // Filtrage
-  const deals_filtered = deals.filter(deal => 
-    deal.id === parseInt(event.target.value)
+  const deals_filtered = currentDeals.filter(deal =>
+    deal.id === parseInt(event.target.value, 10)
   );
 
-  // Mise à jour du state
-  setCurrentDeals(deals_filtered, currentPagination);
-
-  // Render
+  setCurrentDeals({result: deals_filtered, meta: currentPagination});
   render(currentDeals, currentPagination);
   renderLegoSetIds(currentDeals);
-
-  // Indicateur
-  document.getElementById("nbDeals").innerHTML = currentDeals.result.length;
+  document.getElementById("nbDeals").innerHTML = currentDeals.length;
+  updateSortButtonStates(currentSort);
 });
 
 // Show only favorites
@@ -340,6 +393,7 @@ selectShowFavorite.addEventListener('change', async () => {
 
   setCurrentDeals({ result: deals_filtered, meta: deals.meta });
   render(currentDeals, currentPagination);
+  updateSortButtonStates(currentSort);
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -348,6 +402,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   setCurrentDeals({result: deals.result, meta: deals.meta});
   render(currentDeals, currentPagination);
 });
+
+// Update sort button states
+function updateSortButtonStates(activeSort) {
+  if (btnSortPriceAsc) {
+    btnSortPriceAsc.classList.toggle('active', activeSort === 'price-asc');
+  }
+  if (btnSortPriceDesc) {
+    btnSortPriceDesc.classList.toggle('active', activeSort === 'price-desc');
+  }
+  if (btnSortDateAsc) {
+    btnSortDateAsc.classList.toggle('active', activeSort === 'date-asc');
+  }
+  if (btnSortDateDesc) {
+    btnSortDateDesc.classList.toggle('active', activeSort === 'date-desc');
+  }
+}
 
 // Favorites
 function getFavorites() {

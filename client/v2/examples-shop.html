@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SearchLegoDeal - Deals</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand-link" href="examples-landing-page.html"><div class="brand-mark">B</div></a>
+      <nav class="page-nav">
+        <a href="examples-landing-page.html">Accueil</a>
+        <a href="examples-shop.html">Deals</a>
+        <a href="examples-sales.html">Sales</a>
+      </nav>
+    </header>
+
+    <section class="page-header">
+      <div>
+        <p class="eyebrow">Deals</p>
+        <h1>Deals</h1>
+        <p class="page-description">Body text for whatever you’d like to say. Add main takeaway points, quotes, anecdotes, or even a very very short story.</p>
+      </div>
+    </section>
+
+    <div class="shop-layout">
+      <aside class="filter-panel">
+        <div class="filter-header">
+          <p class="filter-title">Filtrer</p>
+          <p class="filter-help">Affinez votre recherche pour trouver le meilleur deal.</p>
+        </div>
+
+        <div class="filter-controls">
+          <label class="select-label">Afficher
+            <select id="show-select">
+              <option value="6">6</option>
+              <option value="12">12</option>
+              <option value="24">24</option>
+            </select>
+          </label>
+          <label class="select-label">Page
+            <select id="page-select"></select>
+          </label>
+        </div>
+
+        <div class="filter-group">
+          <label class="checkbox-row">
+            <input type="checkbox" id="filter-discount" />
+            <span>Discount</span>
+          </label>
+        </div>
+
+        <div class="filter-group">
+          <label class="checkbox-row">
+            <input type="checkbox" id="filter-commented" />
+            <span>Commented</span>
+          </label>
+        </div>
+
+        <div class="filter-group">
+          <label class="checkbox-row">
+            <input type="checkbox" id="filter-hot-deals" />
+            <span>Hot deals</span>
+          </label>
+        </div>
+
+        <div class="filter-group">
+          <label class="checkbox-row">
+            <input type="checkbox" id="show-favorite" />
+            <span>Show only favorites</span>
+          </label>
+        </div>
+
+        <div class="filter-group">
+          <label class="select-label">Set id
+            <select id="lego-set-id-select">
+              <option value="All">All</option>
+            </select>
+          </label>
+        </div>
+
+        <button class="button secondary">Save this filter</button>
+      </aside>
+
+      <section class="deal-list">
+        <div class="search-row">
+          <input type="text" id="deal-search" class="search-box" placeholder="Search deals by title..." />
+          <div class="tag-row">
+            <button id="sort-price-asc-btn" class="tag-pill">↑ Price</button>
+            <button id="sort-price-desc-btn" class="tag-pill">↓ Price</button>
+            <button id="sort-date-asc-btn" class="tag-pill">Oldest</button>
+            <button id="sort-date-desc-btn" class="tag-pill active">Newest</button>
+          </div>
+        </div>
+
+        <section id="deals"></section>
+      </section>
+    </div>
+
+    <footer class="footer-note">
+      <p>Prototype deals page créé pour le projet Lego.</p>
+    </footer>
+  </div>
+  <script src="utils.js"></script>
+  <script src="portfolio.js"></script>
+</body>
+</html>

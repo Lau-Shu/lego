@@ -47,7 +47,7 @@ async function scrapeDealabs (website = 'https://www.dealabs.com/groupe/lego') {
 
 const [,, param] = process.argv;
 
-console.log('----------------- Avenue de la brique scrapping -----------------');
+// console.log('----------------- Avenue de la brique scrapping -----------------');
 //scrapeADLB(param);
 
 console.log('----------------- Vinted scrapping -----------------');

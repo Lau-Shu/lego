@@ -4,6 +4,7 @@ let currentSales = [];
 
 // instantiate the selectors
 const selectShowSales = document.querySelector('#show-select-sales');
+const selectLegoSetId = document.querySelector('#sales-id-input');
 // const selectPageSales = document.querySelector('#page-select-sales');
 // const selectLegoSetIds = document.querySelector('#lego-set-id-select');
 const sectionSales= document.querySelector('#sales');
@@ -55,9 +56,11 @@ const renderSales = sales => {
   const template = sales
     .map(sale => {
       return `
-      <div class="deal" id=${sale.uuid}>
-        <a href="${sale.link}" target="_blank">${sale.title}</a>
-        <span>${sale.price.amount}</span>
+      <div class="sale-item" id="${sale.uuid}">
+        <div class="sale-info">
+          <a href="${sale.link}" target="_blank" class="sale-link">${sale.title}</a>
+          <span class="sale-price">${sale.price.amount}€</span>
+        </div>
       </div>
     `;
     })
@@ -65,7 +68,7 @@ const renderSales = sales => {
 
   div.innerHTML = template;
   fragment.appendChild(div);
-  sectionSales.innerHTML = '<h2>Sales</h2>';
+  sectionSales.innerHTML = '<h2>Sales Links</h2>';
   sectionSales.appendChild(fragment);
 };
 
@@ -88,53 +91,66 @@ const renderLegoSetIdsSales = sales => {
  * Declaration of all Listeners (sales)
  */
 
-selectLegoSetId.addEventListener('change', async (event) => {
-  if (event.target.value === "All") {
+const updateSales = async () => {
+  if (!selectLegoSetId || !selectLegoSetId.value.trim()) {
     return;
   }
 
   const sales = await fetchSales();
+  if (!sales || !sales.result || sales.result.length === 0) {
+    spanNbSales.innerHTML = '0';
+    spanAverageSalePrice.innerHTML = '0';
+    spanP5Value.innerHTML = '0';
+    spanP25Value.innerHTML = '0';
+    spanP50Value.innerHTML = '0';
+    spanLifetimeValue.innerHTML = '0 days';
+    sectionSales.innerHTML = '<p>Aucune vente trouvée pour cet identifiant.</p>';
+    return;
+  }
 
-  // Number of sales
-  // reset nb of sales
-  spanNbSales.innerHTML = "0";
   let prices = [];
   let timestamps = [];
 
   for (const sale of sales.result) {
-      spanNbSales.innerHTML = (parseInt(spanNbSales.innerHTML) + 1).toString();
-      prices.push(parseInt(sale.price.amount));
-      timestamps.push(sale.published);
-  };
+    prices.push(parseInt(sale.price.amount, 10));
+    timestamps.push(sale.published);
+  }
 
-  // Sort the prices for the price values
-  prices = prices.sort((a, b) => a - b);
+  // Update number of sales
+  spanNbSales.innerHTML = sales.result.length.toString();
 
-  // Compute Average sale price
-  const averagePrice = prices.reduce((acc, price) => acc + price, 0) / prices.length;
-  spanAverageSalePrice.innerHTML = averagePrice.toFixed(2).toString();
-
-  // P5
-  const p5Value = prices[Math.floor(prices.length * 0.05)]; // floor gives the index of the biggest value up from 0th to the 5%-th value
+  // Calculate and update price percentiles
+  prices.sort((a, b) => a - b);
+  const p5Value = prices[Math.floor(prices.length * 0.05)] || 0;
+  const p25Value = prices[Math.floor(prices.length * 0.25)] || 0;
+  const p50Value = prices[Math.floor(prices.length * 0.5)] || 0;
   spanP5Value.innerHTML = p5Value.toString();
-
-  // P25
-  const p25Value = prices[Math.floor(prices.length * 0.25)];
   spanP25Value.innerHTML = p25Value.toString();
-
-  // P50
-  const p50Value = prices[Math.floor(prices.length * 0.5)];
   spanP50Value.innerHTML = p50Value.toString();
 
-
-  // Lifetime value
+  // Calculate and update lifetime
   const oldest_sale_timestamp = Math.min(...timestamps);
-  const lifetimeValue = Math.floor((Date.now() - oldest_sale_timestamp) / (1000 * 60 * 60 * 24)); // convert from ms to days
-  spanLifetimeValue.innerHTML = lifetimeValue.toString() + " days";
+  const lifetimeValue = Math.floor((Date.now() - oldest_sale_timestamp) / (1000 * 60 * 60 * 24));
+  spanLifetimeValue.innerHTML = `${lifetimeValue} days`;
 
   setCurrentSales(sales);
   renderSales(sales.result);
-});
+};
 
-// Let's make : nb of sales, average, p5, p25, p50
-// Also Lifetime value, link of sold items
+document.addEventListener('DOMContentLoaded', () => {
+  // Attach event listener after DOM is loaded
+  selectLegoSetId.addEventListener('keydown', async event => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      await updateSales();
+    }
+  });
+
+  // Initialize with empty state
+  spanNbSales.innerHTML = '0';
+  spanP5Value.innerHTML = '0';
+  spanP25Value.innerHTML = '0';
+  spanP50Value.innerHTML = '0';
+  spanLifetimeValue.innerHTML = '0 days';
+  sectionSales.innerHTML = '';
+});

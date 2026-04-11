@@ -3,10 +3,21 @@ import { v5 as uuidv5 } from 'uuid';
 
 // Faire document.querySelector("div.js-threadList article div.js-vue3').getAttribute('data-vue3')
 
-// const extractSetId = title => ...
 
-// const formatImage = image => ...
+function formatImage (mainImage) {
+  const {path, name, slotId} = mainImage;
+  return `https://static-pepper.dealabs.com/${path}/${name}/re/300x300/qt/60`;
+}
 
+function extractSetId(value, regex = /(\d{5})/) {
+  const re = new RegExp(regex);
+  const matches = value.trim().replace(/\s/g, ' ').match(re);
+  
+  if (matches) {
+    return matches[1];
+  }
+  return '';
+};
 
 /**
  * Parse webpage data response
@@ -24,8 +35,7 @@ const parse = data => {
 
       const data = JSON.parse($(element)
           .find('div.js-vue3') 
-          .attr('data-vue3')
-      );
+          .attr('data-vue3'));
 
       console.log(JSON.stringify(data, null, 2));
 
