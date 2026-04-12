@@ -105,7 +105,7 @@ const updateSales = async () => {
     spanP25Value.innerHTML = '0€';
     spanP50Value.innerHTML = '0€';
     spanLifetimeValue.innerHTML = '0 days';
-    sectionSales.innerHTML = '<p>Aucune vente trouvée pour cet identifiant.</p>';
+    sectionSales.innerHTML = '<p>No sales found for this ID.</p>';
     return;
   }
 
