@@ -180,7 +180,10 @@ const renderDeals = deals => {
             <h3 class="deal-title">${deal.title}</h3>
             <span class="deal-id">Set ID: ${deal.id}</span>
           </div>
-          <span class="deal-price">${deal.price}€</span>
+          <div class="deal-prices">
+            <span class="deal-price">${deal.price}€</span>
+            ${deal.retail && deal.retail > 0 ? `<span class="deal-retail-price">${deal.retail}€</span>` : ''}
+          </div>
         </div>
         <label class="favorite-label">
           <input

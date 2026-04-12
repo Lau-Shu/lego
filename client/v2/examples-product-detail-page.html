@@ -32,7 +32,7 @@
           <span class="price-sign">€</span>
           <span class="price-value">50</span>
         </div>
-        <p class="detail-meta">Id : (id of the lego set)<br/>Original Price : (price) / No promotion (if same price)<br/>Vendor : (website) by (user)<br/>Date : (publication date)</p>
+        <p class="detail-meta">Id : (id of the lego set)<br/>Retail Price : (price)<br/>Vendor : (website) by (user)<br/>Date : (publication date)</p>
         <a href="#" class="button primary">Go to seller website</a>
       </div>
     </section>
@@ -111,7 +111,7 @@
         document.querySelector('.detail-price .price-value').textContent = deal.price;
         document.querySelector('.detail-meta').innerHTML = `
           Id : ${deal.id && deal.id.trim() ? deal.id : 'ID not available'}<br/>
-          Original Price : ${deal.price}€<br/>
+          Retail Price : ${deal.retail && deal.retail > 0 ? deal.retail + '€' : deal.price + '€'}<br/>
           Vendor : Lego Deal<br/>
           Date : ${deal.published ? new Date(deal.published * 1000).toLocaleDateString('fr-FR') : 'N/A'}
         `;
@@ -153,12 +153,12 @@
 
         if (!data.success || !data.data || !data.data.result || data.data.result.length === 0) {
           console.log('No sales found for this set');
-          document.querySelector('#detail-nbSales').textContent = 'ID not available';
-          document.querySelector('#detail-avgPrice').textContent = 'ID not available';
-          document.querySelector('#detail-p5value').textContent = 'ID not available';
-          document.querySelector('#detail-p25value').textContent = 'ID not available';
-          document.querySelector('#detail-p50value').textContent = 'ID not available';
-          document.querySelector('#detail-lifetimeValue').textContent = 'ID not available';
+          document.querySelector('#detail-nbSales').textContent = 'ID not found in Vinted';
+          document.querySelector('#detail-avgPrice').textContent = 'ID not found in Vinted';
+          document.querySelector('#detail-p5value').textContent = 'ID not found in Vinted';
+          document.querySelector('#detail-p25value').textContent = 'ID not found in Vinted';
+          document.querySelector('#detail-p50value').textContent = 'ID not found in Vinted';
+          document.querySelector('#detail-lifetimeValue').textContent = 'ID not found in Vinted';
           return;
         }
 
@@ -185,12 +185,12 @@
         document.querySelector('#detail-lifetimeValue').textContent = `${lifetimeValue} days`;
       } catch (error) {
         console.error('Error loading Vinted metrics:', error);
-        document.querySelector('#detail-nbSales').textContent = 'ID not available';
-        document.querySelector('#detail-avgPrice').textContent = 'ID not available';
-        document.querySelector('#detail-p5value').textContent = 'ID not available';
-        document.querySelector('#detail-p25value').textContent = 'ID not available';
-        document.querySelector('#detail-p50value').textContent = 'ID not available';
-        document.querySelector('#detail-lifetimeValue').textContent = 'ID not available';
+        document.querySelector('#detail-nbSales').textContent = 'ID not found in Vinted';
+        document.querySelector('#detail-avgPrice').textContent = 'ID not found in Vinted';
+        document.querySelector('#detail-p5value').textContent = 'ID not found in Vinted';
+        document.querySelector('#detail-p25value').textContent = 'ID not found in Vinted';
+        document.querySelector('#detail-p50value').textContent = 'ID not found in Vinted';
+        document.querySelector('#detail-lifetimeValue').textContent = 'ID not found in Vinted';
       }
     }
   </script>

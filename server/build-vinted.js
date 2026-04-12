@@ -74,11 +74,11 @@ const buildVintedDataset = async () => {
   ========================================================= */
 
   fs.writeFileSync(
-    "./sources/vinted.json",
+    "./sources/myVinted.json",
     JSON.stringify(output, null, 2)
   );
 
-  console.log("✅ vinted.json generated successfully!");
+  console.log("✅ myVinted.json generated successfully!");
 };
 
 /* =========================================================
