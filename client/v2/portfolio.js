@@ -187,7 +187,7 @@ const renderDeals = deals => {
             data-id="${deal.uuid}"
             ${isFavorite(deal.uuid) ? 'checked' : ''}
           />
-          Favori
+          <span>Favori</span>
         </label>
       </a>
     `;
@@ -233,7 +233,9 @@ const renderLegoSetIds = deals => {
 const renderIndicators = pagination => {
   const {count} = pagination;
 
-  spanNbDeals.innerHTML = count;
+  if (spanNbDeals) {
+    spanNbDeals.innerHTML = count;
+  }
 };
 
 const render = (deals, pagination) => {  

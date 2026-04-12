@@ -100,10 +100,10 @@ const updateSales = async () => {
   const sales = await fetchSales();
   if (!sales || !sales.result || sales.result.length === 0) {
     spanNbSales.innerHTML = '0';
-    spanAverageSalePrice.innerHTML = '0';
-    spanP5Value.innerHTML = '0';
-    spanP25Value.innerHTML = '0';
-    spanP50Value.innerHTML = '0';
+    spanAverageSalePrice.innerHTML = '0€';
+    spanP5Value.innerHTML = '0€';
+    spanP25Value.innerHTML = '0€';
+    spanP50Value.innerHTML = '0€';
     spanLifetimeValue.innerHTML = '0 days';
     sectionSales.innerHTML = '<p>Aucune vente trouvée pour cet identifiant.</p>';
     return;
@@ -120,14 +120,18 @@ const updateSales = async () => {
   // Update number of sales
   spanNbSales.innerHTML = sales.result.length.toString();
 
+  // Calculate and update average price
+  const avgPrice = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
+  spanAverageSalePrice.innerHTML = `${avgPrice}€`;
+
   // Calculate and update price percentiles
   prices.sort((a, b) => a - b);
   const p5Value = prices[Math.floor(prices.length * 0.05)] || 0;
   const p25Value = prices[Math.floor(prices.length * 0.25)] || 0;
   const p50Value = prices[Math.floor(prices.length * 0.5)] || 0;
-  spanP5Value.innerHTML = p5Value.toString();
-  spanP25Value.innerHTML = p25Value.toString();
-  spanP50Value.innerHTML = p50Value.toString();
+  spanP5Value.innerHTML = `${p5Value}€`;
+  spanP25Value.innerHTML = `${p25Value}€`;
+  spanP50Value.innerHTML = `${p50Value}€`;
 
   // Calculate and update lifetime
   const oldest_sale_timestamp = Math.min(...timestamps);
@@ -149,9 +153,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize with empty state
   spanNbSales.innerHTML = '0';
-  spanP5Value.innerHTML = '0';
-  spanP25Value.innerHTML = '0';
-  spanP50Value.innerHTML = '0';
+  spanAverageSalePrice.innerHTML = '0€';
+  spanP5Value.innerHTML = '0€';
+  spanP25Value.innerHTML = '0€';
+  spanP50Value.innerHTML = '0€';
   spanLifetimeValue.innerHTML = '0 days';
   sectionSales.innerHTML = '';
 });

@@ -1,18 +1,18 @@
 ﻿<!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SearchLegoDeal - Détail</title>
+  <title>SearchLegoDeal - Detail</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="page-shell">
     <header class="topbar">
-      <a class="brand-link" href="examples-landing-page.html"><div class="brand-mark">B</div></a>
+      <a class="brand-link" href="examples-landing-page.html"><div class="brand-mark">🏠</div></a>
       <nav class="page-nav">
-        <a href="examples-landing-page.html">Accueil</a>
+        <a href="examples-landing-page.html">Home</a>
         <a href="examples-shop.html">Deals</a>
         <a href="examples-sales.html">Sales</a>
       </nav>
@@ -20,14 +20,14 @@
 
     <section class="product-detail-grid">
       <div class="product-image-panel">
-        <button class="icon-button heart" aria-label="Favori">♥</button>
+        <button class="icon-button heart" aria-label="Favorite">♥</button>
         <div class="product-image"></div>
       </div>
       <div class="detail-panel">
         <div class="detail-heading">
           <p class="eyebrow">Text Heading</p>
-          <div class="tag-chip">Tag</div>
         </div>
+        <h2 class="detail-title" style="margin: 0 0 16px 0; font-size: 1.5rem;">Article Title</h2>
         <div class="detail-price">
           <span class="price-sign">€</span>
           <span class="price-value">50</span>
@@ -47,20 +47,24 @@
           <p id="detail-nbSales" class="metric-value">0</p>
         </article>
         <article class="metric-card">
+          <p class="metric-label">Average price</p>
+          <p id="detail-avgPrice" class="metric-value">0€</p>
+        </article>
+        <article class="metric-card">
           <p class="metric-label">Lifetime value</p>
           <p id="detail-lifetimeValue" class="metric-value">0 days</p>
         </article>
         <article class="metric-card">
           <p class="metric-label">p5 price value</p>
-          <p id="detail-p5value" class="metric-value">0</p>
+          <p id="detail-p5value" class="metric-value">0€</p>
         </article>
         <article class="metric-card">
           <p class="metric-label">p25 price value</p>
-          <p id="detail-p25value" class="metric-value">0</p>
+          <p id="detail-p25value" class="metric-value">0€</p>
         </article>
         <article class="metric-card">
           <p class="metric-label">p50 price value</p>
-          <p id="detail-p50value" class="metric-value">0</p>
+          <p id="detail-p50value" class="metric-value">0€</p>
         </article>
       </div>
     </section>
@@ -103,6 +107,7 @@
         const imageUrl = deal.photo || `https://via.placeholder.com/400x300/FFD700/000000?text=Lego+Set+${deal.id}`;
         document.querySelector('.product-image').style.backgroundImage = `url('${imageUrl}')`;
         document.querySelector('.eyebrow').textContent = `Deal ${deal.id}`;
+        document.querySelector('.detail-title').textContent = deal.title;
         document.querySelector('.detail-price .price-value').textContent = deal.price;
         document.querySelector('.detail-meta').innerHTML = `
           Id : ${deal.id}<br/>
@@ -142,38 +147,44 @@
 
         if (!data.success || !data.data || !data.data.result || data.data.result.length === 0) {
           console.log('No sales found for this set');
-          document.querySelector('#detail-nbSales').textContent = 'Pas d\'ID disponible';
-          document.querySelector('#detail-p5value').textContent = 'Pas d\'ID disponible';
-          document.querySelector('#detail-p25value').textContent = 'Pas d\'ID disponible';
-          document.querySelector('#detail-p50value').textContent = 'Pas d\'ID disponible';
-          document.querySelector('#detail-lifetimeValue').textContent = 'Pas d\'ID disponible';
+          document.querySelector('#detail-nbSales').textContent = 'ID not available';
+          document.querySelector('#detail-avgPrice').textContent = 'ID not available';
+          document.querySelector('#detail-p5value').textContent = 'ID not available';
+          document.querySelector('#detail-p25value').textContent = 'ID not available';
+          document.querySelector('#detail-p50value').textContent = 'ID not available';
+          document.querySelector('#detail-lifetimeValue').textContent = 'ID not available';
           return;
         }
 
         const sales = data.data.result;
         const prices = sales.map(s => parseInt(s.price.amount, 10)).sort((a, b) => a - b);
-        const timestamps = sales.map(s => s.published);
+        const timestamps = sales.map(s => new Date(s.published).getTime());
 
         // Update metrics
         document.querySelector('#detail-nbSales').textContent = sales.length;
 
+        // Calculate average price
+        const avgPrice = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
+        document.querySelector('#detail-avgPrice').textContent = `${avgPrice}€`;
+
         const p5Value = prices[Math.floor(prices.length * 0.05)] || 0;
         const p25Value = prices[Math.floor(prices.length * 0.25)] || 0;
         const p50Value = prices[Math.floor(prices.length * 0.5)] || 0;
-        document.querySelector('#detail-p5value').textContent = p5Value;
-        document.querySelector('#detail-p25value').textContent = p25Value;
-        document.querySelector('#detail-p50value').textContent = p50Value;
+        document.querySelector('#detail-p5value').textContent = `${p5Value}€`;
+        document.querySelector('#detail-p25value').textContent = `${p25Value}€`;
+        document.querySelector('#detail-p50value').textContent = `${p50Value}€`;
 
         const oldest_sale_timestamp = Math.min(...timestamps);
         const lifetimeValue = Math.floor((Date.now() - oldest_sale_timestamp) / (1000 * 60 * 60 * 24));
         document.querySelector('#detail-lifetimeValue').textContent = `${lifetimeValue} days`;
       } catch (error) {
         console.error('Error loading Vinted metrics:', error);
-        document.querySelector('#detail-nbSales').textContent = 'Pas d\'ID disponible';
-        document.querySelector('#detail-p5value').textContent = 'Pas d\'ID disponible';
-        document.querySelector('#detail-p25value').textContent = 'Pas d\'ID disponible';
-        document.querySelector('#detail-p50value').textContent = 'Pas d\'ID disponible';
-        document.querySelector('#detail-lifetimeValue').textContent = 'Pas d\'ID disponible';
+        document.querySelector('#detail-nbSales').textContent = 'ID not available';
+        document.querySelector('#detail-avgPrice').textContent = 'ID not available';
+        document.querySelector('#detail-p5value').textContent = 'ID not available';
+        document.querySelector('#detail-p25value').textContent = 'ID not available';
+        document.querySelector('#detail-p50value').textContent = 'ID not available';
+        document.querySelector('#detail-lifetimeValue').textContent = 'ID not available';
       }
     }
   </script>
