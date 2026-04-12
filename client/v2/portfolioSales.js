@@ -31,7 +31,8 @@ const setCurrentSales = (salesArray) => {
 const fetchSales = async () => {
   try {
     const response = await fetch(
-      `https://lego-api-blue.vercel.app/sales?id=${selectLegoSetId.value}`
+      //`https://lego-api-blue.vercel.app/sales?id=${selectLegoSetId.value}`
+      `https://lego-vercel-myapi.vercel.app/sales/search?legoSetId=${selectLegoSetId.value}`
     );
     const body = await response.json();
     if (body.success !== true) {

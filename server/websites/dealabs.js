@@ -76,7 +76,7 @@ const scrape = async (baseUrl) => {
   try {
     let allDeals = [];
 
-    const maxPages = 3; // ou 5 selon ce que ton prof attend
+    const maxPages = 6; 
 
     for (let page = 1; page <= maxPages; page++) {
       const url = `${baseUrl}?page=${page}`;

@@ -1,104 +1,85 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>🧱 Lego | Predictability of a lego set deal</title>
-  </head>
-  <body>
-    <h1>Lego</h1>
-    <section id="options">
-      <div id="show">
-        <label for="show-select">Show:</label>
-        <select name="show" id="show-select">
-          <option value="6">6</option>
-          <option value="12">12</option>
-          <option value="24">24</option>
-        </select>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SearchLegoDeal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="brand">
+        <a class="brand-link" href="index_final.html">
+          <div class="brand-mark">Home</div>
+        </a>
       </div>
-      <div id="page">
-        <label for="page-select">Go to page:</label>
-        <select name="page" id="page-select"> </select>
-      </div>
-      <div id="filters">
-        <label for="show-filter">Filter by :</label>
-        <input type="checkbox" id="filter-discount" name="filter-discount" value="Discount">
-        <label for="filter-discount">Discount</label>
+      <nav class="page-nav">
+        <a href="index_final.html">Accueil</a>
+        <a href="examples-shop.html">Deals</a>
+        <a href="examples-sales.html">Sales</a>
+      </nav>
+      <button class="menu-button" type="button" aria-label="Ouvrir le menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
 
-        <input type="checkbox" id="filter-commented" name="filter-commented" value="Commented">
-        <label for="filter-commented">Commented</label>
+    <main class="hero-section">
+      <section class="hero-copy">
+        <h1>SearchLegoDeal</h1>
+        <p class="hero-subtitle">Subtitle</p>
+        <p class="hero-description">Body text for whatever you’d like to say. Add main takeaway points, quotes, anecdotes, or even a very very short story.</p>
+        <div class="hero-actions">
+          <a href="examples-shop.html" class="button primary">Find the best deal</a>
+        </div>
+        <div class="hero-links">
+          <a href="examples-shop.html">Voir les deals</a>
+          <a href="examples-sales.html">Voir les ventes</a>
+        </div>
+      </section>
+      <section class="hero-visual">
+        <div class="hero-card"></div>
+      </section>
+    </main>
 
-        <input type="checkbox" id="filter-hot-deals" name="filter-hot-deals" value="Hot deals">
-        <label for="filter-hot-deals">Hot deals</label>
-      </div>
-      <div id="showFavorite">
-        <label for="show-favorite">Show only favorites:</label>
-        <input type="checkbox" id="show-favorite" name="show-favorite" value="Show only favorites">
-      </div>
+    <section class="info-row">
+      <a class="card-link" href="examples-shop.html">
+        <article class="info-card">
+          <div class="placeholder-media"></div>
+          <div class="card-footer">
+            <span>Dealabs</span>
+          </div>
+        </article>
+      </a>
+      <a class="card-link" href="examples-shop.html">
+        <article class="info-card">
+          <div class="placeholder-media"></div>
+          <div class="card-footer">
+            <span>Vinted</span>
+          </div>
+        </article>
+      </a>
+    </section>
 
-      <div id="sort">
-        <label for="sort-select">Sort:</label>
-        <select name="sort" id="sort-select">
-          <option value="price-asc">Cheaper</option>
-          <option value="price-desc">Expensive</option>
-          <option value="date-asc">Recently published</option>
-          <option value="date-desc">Anciently published</option>
-        </select>
+    <section class="feature-panel">
+      <div class="feature-visual"></div>
+      <div class="feature-text">
+        <div class="feature-heading">
+          <p class="feature-label">What is our deal ?</p>
+          <p class="feature-subtitle">Subheading</p>
+        </div>
+        <p class="feature-description">Explanation of what is our website and what purpose it serves.</p>
       </div>
     </section>
-    <section id="lego">
-      <h2>Lego sets</h2>
-      <div>
-        <label for="lego-set-id-select">Lego set id:</label>
-        <select name="select-id" id="lego-set-id-select">
-        </select> 
-      </div>
-    </section>
-    <section id="indicators">
-      <h2>Indicators for Deals</h2>
-      <div>
-        <span>Number of deals</span>
-        <span id="nbDeals">0</span>
-      </div>
-      <div>
-        <span>Number of sales</span>
-        <span id="nbSales">0</span>
-      </div>
-      <div>
-        <span>Average sale price</span>
-        <span id="averageSalePrice">0</span>
-      </div>
-      <div>
-        <span>p5 sales price value</span>
-        <span id="p5value">0</span>
-      </div>
-      <div>
-        <span>p25 sales price value</span>
-        <span id="p25value">0</span>
-      </div>
-      <div>
-        <span>p50 sales price value</span>
-        <span id="p50value">0</span>
-      </div>
-      <div>
-        <span>Lifetime value</span>
-        <span id="lifetimeValue">0 days</span>
-      </div>
 
-      <h2>Indicators for Sales</h2>
-      <div>
-        <span>Number of current sales :</span>
-        <span id="nbCurrentSales">0</span>
-      </div>
-      <div>
-        <span>Number of past sales :</span>
-        <span id="nbPastSales">0</span>
-      </div>
-
-    </section>
-    <section id="deals"></section>
-    <script type="text/javascript" charset="UTF-8" src="utils.js"></script>
-    <script type="text/javascript" charset="UTF-8" src="portfolio.js"></script>
-    <section id="sales"></section>
-    <script type="text/javascript" charset="UTF-8" src="portfolioSales.js"></script>
-  </body>
+    <footer class="footer-note">
+      <p>Prototype landing page créé pour le projet Lego</p>
+    </footer>
+  </div>
+</body>
 </html>
