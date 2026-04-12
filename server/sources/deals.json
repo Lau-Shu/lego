@@ -8,7 +8,7 @@
     "price": 46.99,
     "retail": 55,
     "discount": 14,
-    "temperature": 6.11,
+    "temperature": 7.11,
     "comments": 0,
     "published": 1776023408
   },
@@ -21,7 +21,7 @@
     "price": 37.61,
     "retail": 56.89,
     "discount": 33,
-    "temperature": 154.39,
+    "temperature": 162.59,
     "comments": 5,
     "published": 1776020097
   },
@@ -34,7 +34,7 @@
     "price": 144,
     "retail": 169.99,
     "discount": 15,
-    "temperature": 83.97,
+    "temperature": 93.57,
     "comments": 5,
     "published": 1776007888
   },
@@ -47,7 +47,7 @@
     "price": 8.99,
     "retail": 0,
     "discount": null,
-    "temperature": 29.74,
+    "temperature": 32.14,
     "comments": 0,
     "published": 1775993684
   },
@@ -60,7 +60,7 @@
     "price": 12.04,
     "retail": 15.99,
     "discount": 24,
-    "temperature": 115.62,
+    "temperature": 126.22,
     "comments": 0,
     "published": 1775984435
   },
@@ -99,7 +99,7 @@
     "price": 77.38,
     "retail": 99.99,
     "discount": 22,
-    "temperature": 36.86,
+    "temperature": 32.24,
     "comments": 0,
     "published": 1775910137
   },
@@ -112,7 +112,7 @@
     "price": 199.99,
     "retail": 249.99,
     "discount": 20,
-    "temperature": 251.63,
+    "temperature": 256.43,
     "comments": 13,
     "published": 1775882574
   },
@@ -138,7 +138,7 @@
     "price": 11.24,
     "retail": 14.99,
     "discount": 25,
-    "temperature": 74.65,
+    "temperature": 70.03,
     "comments": 0,
     "published": 1775844967
   },
@@ -515,7 +515,7 @@
     "price": 149.9,
     "retail": 0,
     "discount": null,
-    "temperature": 35.54,
+    "temperature": 34.14,
     "comments": 3,
     "published": 1775757067
   },

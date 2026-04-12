@@ -6,7 +6,7 @@ import { scrape as scrapeVinted } from "./websites/vinted.js";
    CONFIG
 ========================================================= */
 
-const MAX_IDS = 24 * 5;
+const MAX_IDS = 500;
 const DELAY_MS = 800;
 
 /* =========================================================
