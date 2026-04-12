@@ -6434,6 +6434,11 @@ body {
   color: var(--lego-red);
 }
 
+.filter-panel .button.secondary {
+  width: 100%;
+  margin-top: 16px;
+}
+
 .hero-image-group {
   display: grid;
   gap: 24px;
@@ -6496,6 +6501,17 @@ body {
 
 .filter-header {
   margin-bottom: 24px;
+}
+
+.filter-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.filter-group {
+  margin-bottom: 16px;
 }
 
 .filter-title {
@@ -6819,6 +6835,11 @@ body {
 .sales-chart-row {
   display: grid;
   gap: 24px;
+}
+
+.sales-top-row {
+  grid-auto-rows: min-content;
+  align-items: start;
 }
 
 .sales-stats-row {
