@@ -93,7 +93,6 @@ const resetFilters = async () => {
   selectFilterCommented.checked = false;
   selectFilterHotDeals.checked = false;
   selectShowFavorite.checked = false;
-  selectShow.value = '6';
   currentSort = 'date-desc';
   currentSearchTerm = '';
   
@@ -104,7 +103,10 @@ const resetFilters = async () => {
   
   saveFiltersToStorage();
   
-  const deals = await fetchDeals(1, 6);
+  const currentPage = parseInt(selectPage.value) || 1;
+  const currentSize = parseInt(selectShow.value) || 6;
+  
+  const deals = await fetchDeals(currentPage, currentSize);
   setCurrentDeals({result: deals.result, meta: deals.meta});
   const deals_filtered = applyFiltersSearchAndSort();
   currentDeals = deals_filtered;

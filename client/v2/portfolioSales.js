@@ -135,7 +135,7 @@ const updateSales = async () => {
 
   // Calculate and update lifetime
   const oldest_sale_timestamp = Math.min(...timestamps);
-  const lifetimeValue = Math.floor((Date.now() - oldest_sale_timestamp) / (1000 * 60 * 60 * 24));
+  const lifetimeValue = Math.floor((Date.now() - oldest_sale_timestamp * 1000) / (1000 * 60 * 60 * 24));
   spanLifetimeValue.innerHTML = `${lifetimeValue} days`;
 
   setCurrentSales(sales);
