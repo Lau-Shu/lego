@@ -8,7 +8,7 @@
     "price": 46.99,
     "retail": 55,
     "discount": 14,
-    "temperature": 7.11,
+    "temperature": 13.91,
     "comments": 0,
     "published": 1776023408
   },
@@ -21,7 +21,7 @@
     "price": 37.61,
     "retail": 56.89,
     "discount": 33,
-    "temperature": 162.59,
+    "temperature": 172.91,
     "comments": 5,
     "published": 1776020097
   },
@@ -34,7 +34,7 @@
     "price": 144,
     "retail": 169.99,
     "discount": 15,
-    "temperature": 93.57,
+    "temperature": 115.41,
     "comments": 5,
     "published": 1776007888
   },
@@ -47,7 +47,7 @@
     "price": 8.99,
     "retail": 0,
     "discount": null,
-    "temperature": 32.14,
+    "temperature": 35.54,
     "comments": 0,
     "published": 1775993684
   },
@@ -55,13 +55,13 @@
     "uuid": "cc483730-8025-545d-be9d-41936bf87282",
     "id": "60415",
     "photo": "https://static-pepper.dealabs.com/threads/raw/nUnB1/3313323_1/re/300x300/qt/60/3313323_1.jpg",
-    "title": "Lego City 60415 - La course poursuite entre la voiture de police et la super voiture",
+    "title": "LEGO City 60415 - La Course-Poursuite Entre la Voiture de Police et la Super Voiture",
     "link": "https://www.dealabs.com/bons-plans/lego-city-60415-la-course-poursuite-entre-la-voiture-de-police-et-la-super-voiture-3313323",
     "price": 12.04,
     "retail": 15.99,
     "discount": 24,
-    "temperature": 126.22,
-    "comments": 0,
+    "temperature": 134.44,
+    "comments": 2,
     "published": 1775984435
   },
   {
@@ -73,7 +73,7 @@
     "price": 38.85,
     "retail": 51.8,
     "discount": 24,
-    "temperature": 230.39,
+    "temperature": 237.76,
     "comments": 1,
     "published": 1775930389
   },
@@ -99,7 +99,7 @@
     "price": 77.38,
     "retail": 99.99,
     "discount": 22,
-    "temperature": 32.24,
+    "temperature": 34.64,
     "comments": 0,
     "published": 1775910137
   },
@@ -112,7 +112,7 @@
     "price": 199.99,
     "retail": 249.99,
     "discount": 20,
-    "temperature": 256.43,
+    "temperature": 258.83,
     "comments": 13,
     "published": 1775882574
   },
@@ -866,7 +866,7 @@
     "price": 25.82,
     "retail": 29.98,
     "discount": 13,
-    "temperature": -45.68,
+    "temperature": -47.1,
     "comments": 5,
     "published": 1775471554
   },
