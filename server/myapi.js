@@ -2,6 +2,7 @@ import express from 'express';
 
 import * as vinted from './websites/vinted.js';
 import * as dealabs from './websites/dealabs.js';
+import VINTED from './sources/myVinted.json' with { type: 'json' };
 
 const app = express();
 const PORT = 3000;
@@ -16,25 +17,26 @@ app.get('/health', (req, res) => {
 /* =========================================================
    SALES (VINTED ONLY)
    GET /sales/search?legoSetId=10348
-========================================================= */
-app.get('/sales/search', async (req, res) => {
+========================================================= */app.get('/sales/search', (req, res) => {
   try {
     const { legoSetId } = req.query;
 
-
     if (!legoSetId) {
       return res.status(400).json({
+        success: false,
         error: 'legoSetId is required'
       });
     }
 
-    console.log(`🔎 Vinted sales search for LEGO ${legoSetId}`);
+    console.log(`🔎 Vinted search for LEGO ${legoSetId}`);
 
-    const vintedResults = await vinted.scrape(legoSetId);
+    const sales = VINTED[legoSetId] || [];
 
     return res.json({
-      legoSetId,
-      sales: vintedResults || [],
+      success: true,
+      data: {
+        result: sales
+      },
       updatedAt: new Date().toISOString()
     });
 
@@ -42,8 +44,8 @@ app.get('/sales/search', async (req, res) => {
     console.error(err);
 
     return res.status(500).json({
-      error: 'Internal server error',
-      message: err.message
+      success: false,
+      error: err.message
     });
   }
 });
