@@ -111,8 +111,8 @@ const resetFilters = async () => {
 const fetchDeals = async (page = 1, size = 6) => {
   try {
     const response = await fetch(
-       `https://lego-api-blue.vercel.app/deals?page=${page}&size=${size}`
-      //`https://lego-vercel-myapi.vercel.app/deals/search?page=${page}&size=${size}`
+       //`https://lego-api-blue.vercel.app/deals?page=${page}&size=${size}`
+      `https://lego-vercel-myapi.vercel.app/deals/search?page=${page}&size=${size}`
     );
     const body = await response.json();
 

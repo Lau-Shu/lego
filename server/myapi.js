@@ -1,11 +1,20 @@
 import express from 'express';
+import cors from 'cors';
 
 // import * as vinted from './websites/vinted.js';
-import * as dealabs from './websites/dealabs.js';
+// import * as dealabs from './websites/dealabs.js';
 import VINTED from './sources/myVinted.json' with { type: 'json' };
+import DEALS from './sources/deals.json' with { type: 'json' };
 
 const app = express();
 const PORT = 3000;
+
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
+
+app.use(express.json());
 
 /* =========================================================
    HEALTH CHECK
@@ -56,23 +65,18 @@ app.get('/sales/search', (req, res) => {
    DEALS SEARCH (DEALABS LIST)
    GET /deals/search
 ========================================================= */
-
-app.get('/deals/search', async (req, res) => {
+app.get('/deals/search', (req, res) => {
   try {
     const page = Number(req.query.page) || 1;
     const size = Number(req.query.size) || 6;
 
-    const allDeals = await dealabs.scrape(
-      'https://www.dealabs.com/groupe/lego'
-    );
-
-    const count = allDeals.length;
+    const count = DEALS.length;
     const pageCount = Math.ceil(count / size);
 
     const start = (page - 1) * size;
     const end = start + size;
 
-    const result = allDeals.slice(start, end);
+    const result = DEALS.slice(start, end);
 
     return res.json({
       success: true,
@@ -99,17 +103,13 @@ app.get('/deals/search', async (req, res) => {
    DEAL BY ID
    GET /deals/:id
 ========================================================= */
-app.get('/deals/:id', async (req, res) => {
+app.get('/deals/:id', (req, res) => {
   try {
     const { id } = req.params;
 
     console.log(`🔎 Searching deal ${id}`);
 
-    const deals = await dealabs.scrape(
-      'https://www.dealabs.com/groupe/lego'
-    );
-
-    const deal = deals.find(d => d.id === id);
+    const deal = DEALS.find(d => d.id === id);
 
     if (!deal) {
       return res.status(404).json({
