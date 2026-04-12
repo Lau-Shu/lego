@@ -1,45 +1,47 @@
-import * as cheerio from 'cheerio'; 
+import * as cheerio from 'cheerio';
 import { v5 as uuidv5 } from 'uuid';
+
+// Namespace fixe (obligatoire pour uuidv5)
+const NAMESPACE = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
 
 // Faire document.querySelector("div.js-threadList article div.js-vue3').getAttribute('data-vue3')
 
-
-function formatImage (mainImage) {
-  const {path, name, slotId} = mainImage;
+function formatImage(mainImage) {
+  const { path, name, slotId } = mainImage;
   return `https://static-pepper.dealabs.com/${path}/${name}/re/300x300/qt/60/${name}.jpg`;
 }
 
+// 🔒 gardé tel quel (comme ton prof)
 function extractSetId(value, regex = /(\d{5})/) {
   const re = new RegExp(regex);
   const matches = value.trim().replace(/\s/g, ' ').match(re);
-  
+
   if (matches) {
     return matches[1];
   }
   return '';
-};
+}
 
 /**
  * Parse webpage data response
- * @param  {String} data - html response
- * @return {Object} deal
  */
 const parse = data => {
-  const $ = cheerio.load(data, {'xmlMode': true});
+  const $ = cheerio.load(data, { xmlMode: true });
 
-  return $('div.js-threadList article') // du CSS, on a un JSON dans un attribut data-vue3, on va le parser pour récupérer les infos dont on a besoin
+  return $('div.js-threadList article')
     .map((i, element) => {
       const link = $(element)
         .find('a[data-t="threadLink"]')
-        .attr('href'); 
+        .attr('href');
 
-      const data = JSON.parse($(element)
-          .find('div.js-vue3') 
-          .attr('data-vue3'));
-
-      // console.log(JSON.stringify(data, null, 2));
+      const data = JSON.parse(
+        $(element)
+          .find('div.js-vue3')
+          .attr('data-vue3')
+      );
 
       const thread = data.props.thread;
+
       const retail = thread.nextBestPrice;
       const price = thread.price;
       const discount = parseInt((retail - price) / retail * 100);
@@ -49,9 +51,11 @@ const parse = data => {
       const published = thread.publishedAt;
       const title = thread.title;
       const id = extractSetId(title);
+      const uuid = uuidv5(link, NAMESPACE);
 
       return {
-        id,
+        uuid,        // ✅ ajouté
+        id,          // (prof)
         photo,
         title,
         link,
@@ -68,15 +72,11 @@ const parse = data => {
 
 /**
  * Scrape a given url page
- * @param {String} url - url to parse and scrape
- * @returns 
  */
-
 const scrape = async (baseUrl) => {
   try {
     let allDeals = [];
-
-    const maxPages = 6; 
+    const maxPages = 6;
 
     for (let page = 1; page <= maxPages; page++) {
       const url = `${baseUrl}?page=${page}`;
@@ -102,4 +102,4 @@ const scrape = async (baseUrl) => {
   }
 };
 
-export {scrape};
+export { scrape };

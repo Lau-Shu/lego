@@ -39,8 +39,7 @@
 
     <section class="about-panel">
       <div class="about-heading">
-        <p class="section-title">About the set’s information on Vinted...</p>
-        <p class="section-subtitle">Subheading</p>
+        <p class="section-title">About the set’s information on Vinted</p>
       </div>
       <div class="metric-grid">
         <article class="metric-card">
@@ -65,10 +64,6 @@
         </article>
       </div>
     </section>
-
-    <footer class="footer-note">
-      <p>Prototype product detail page créé pour le projet Lego.</p>
-    </footer>
   </div>
   <script src="portfolio.js"></script>
   <script>
@@ -105,14 +100,15 @@
 
       if (deal) {
         // Remplir la page avec les données du deal
-        document.querySelector('.product-image').style.backgroundImage = `url(https://via.placeholder.com/400x300/FFD700/000000?text=Lego+Set+${deal.id})`;
+        const imageUrl = deal.photo || `https://via.placeholder.com/400x300/FFD700/000000?text=Lego+Set+${deal.id}`;
+        document.querySelector('.product-image').style.backgroundImage = `url('${imageUrl}')`;
         document.querySelector('.eyebrow').textContent = `Deal ${deal.id}`;
         document.querySelector('.detail-price .price-value').textContent = deal.price;
         document.querySelector('.detail-meta').innerHTML = `
           Id : ${deal.id}<br/>
           Original Price : ${deal.price}€<br/>
           Vendor : Lego Deal<br/>
-          Date : ${deal.published ? new Date(deal.published).toLocaleDateString() : 'N/A'}
+          Date : ${deal.published ? new Date(deal.published * 1000).toLocaleDateString('fr-FR') : 'N/A'}
         `;
         document.querySelector('.button.primary').href = deal.link;
         document.querySelector('.button.primary').target = '_blank';
@@ -126,9 +122,14 @@
           heartButton.classList.toggle('active', isFavorite(deal.uuid));
         });
 
-        // Load Vinted metrics for this set ID
-        await loadVintedMetrics(deal.id);
+        if (!deal.id) {
+          console.warn("Missing Vinted id");
+        } else {
+          await loadVintedMetrics(deal.id);
+        }
       } else {
+        // Load Vinted metrics for this set ID
+        console.log(`Loading Vinted metrics for set ID: ${deal.id}`);
         console.error('Deal not found');
       }
     });
@@ -136,11 +137,16 @@
     // Function to load Vinted sales metrics
     async function loadVintedMetrics(setId) {
       try {
-        const response = await fetch(`https://lego-api-blue.vercel.app/sales?id=${setId}`);
+        const response = await fetch(`https://lego-vercel-myapi.vercel.app/sales/search?legoSetId=${setId}`);
         const data = await response.json();
 
-        if (!data.success || !data.data.result || data.data.result.length === 0) {
+        if (!data.success || !data.data || !data.data.result || data.data.result.length === 0) {
           console.log('No sales found for this set');
+          document.querySelector('#detail-nbSales').textContent = 'Pas d\'ID disponible';
+          document.querySelector('#detail-p5value').textContent = 'Pas d\'ID disponible';
+          document.querySelector('#detail-p25value').textContent = 'Pas d\'ID disponible';
+          document.querySelector('#detail-p50value').textContent = 'Pas d\'ID disponible';
+          document.querySelector('#detail-lifetimeValue').textContent = 'Pas d\'ID disponible';
           return;
         }
 
@@ -163,6 +169,11 @@
         document.querySelector('#detail-lifetimeValue').textContent = `${lifetimeValue} days`;
       } catch (error) {
         console.error('Error loading Vinted metrics:', error);
+        document.querySelector('#detail-nbSales').textContent = 'Pas d\'ID disponible';
+        document.querySelector('#detail-p5value').textContent = 'Pas d\'ID disponible';
+        document.querySelector('#detail-p25value').textContent = 'Pas d\'ID disponible';
+        document.querySelector('#detail-p50value').textContent = 'Pas d\'ID disponible';
+        document.querySelector('#detail-lifetimeValue').textContent = 'Pas d\'ID disponible';
       }
     }
   </script>
