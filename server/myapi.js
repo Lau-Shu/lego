@@ -1,6 +1,6 @@
 import express from 'express';
 
-import * as vinted from './websites/vinted.js';
+// import * as vinted from './websites/vinted.js';
 import * as dealabs from './websites/dealabs.js';
 import VINTED from './sources/myVinted.json' with { type: 'json' };
 
@@ -17,7 +17,9 @@ app.get('/health', (req, res) => {
 /* =========================================================
    SALES (VINTED ONLY)
    GET /sales/search?legoSetId=10348
-========================================================= */app.get('/sales/search', (req, res) => {
+========================================================= */
+
+app.get('/sales/search', (req, res) => {
   try {
     const { legoSetId } = req.query;
 
